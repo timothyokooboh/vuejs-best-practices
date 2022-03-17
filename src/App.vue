@@ -1,7 +1,15 @@
 <script setup lang="ts">
-import AppTemplate from "./components/AppTemplate.vue";
+import CustomerList from "./components/CustomerList.vue";
+import { onErrorCaptured } from "vue";
+
+const triggerError = () => {
+  return Promise.reject({ message: "something went wrong in app.vue" });
+};
+
 </script>
 
 <template>
-  <AppTemplate />
+  <CustomerList />
+   <!-- <button @click="triggerError">Trigger error</button> -->
+
 </template>

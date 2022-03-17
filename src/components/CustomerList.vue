@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { customers as customersData } from "../Customers";
-// import CustomerListItem from "./CustomerListItem.vue";
+import CustomerListItem from "./CustomerListItem.vue";
 
 interface Customer {
   id: number;
@@ -13,6 +13,19 @@ interface Customer {
 
 const customers = ref<Customer[]>(customersData);
 const cardToOpen = ref<number | null>(null);
+
+const canNotifyContacts = (
+  balance: number,
+  yearsOwing: number,
+  salaryAccountDeactivated: boolean
+) => {
+  return balance > 4999 && yearsOwing > 2 && salaryAccountDeactivated;
+};
+
+const test = (val: number) => {
+  console.log(val);
+  cardToOpen.value = val;
+}
 </script>
 
 <template>
@@ -29,7 +42,7 @@ const cardToOpen = ref<number | null>(null);
         </tr>
       </thead>
       <tbody>
-        <tr v-for="customer in customers" :key="customer.id">
+         <tr v-for="customer in customers" :key="customer.id">
           <td>{{ customer.name }}</td>
           <td>{{ customer.balance }}</td>
           <td>{{ customer.yearsOwing }}</td>
@@ -45,9 +58,11 @@ const cardToOpen = ref<number | null>(null);
                 <div
                   class="drop-down-list-item"
                   v-if="
-                    customer.balance > 4999 &&
-                    customer.yearsOwing > 2 &&
-                    customer.salaryAccountDeactivated
+                    canNotifyContacts(
+                      customer.balance,
+                      customer.yearsOwing,
+                      customer.salaryAccountDeactivated
+                    )
                   "
                 >
                   Notify contacts
@@ -55,13 +70,14 @@ const cardToOpen = ref<number | null>(null);
               </div>
             </div>
           </td>
-
-          <!-- <CustomerListItem
-            :customer="customer"
-            :cardToOpen="cardToOpen"
-            @show-actions="cardToOpen = $event"
-          /> -->
         </tr>
+        <!-- <CustomerListItem
+          v-for="customer in customers"
+          :key="customer.id"
+          :customer="customer"
+          :card-to-open="cardToOpen"
+          @show-actions="cardToOpen = $event"
+        /> -->
       </tbody>
     </table>
   </div>

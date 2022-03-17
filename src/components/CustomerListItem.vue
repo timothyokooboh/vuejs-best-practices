@@ -13,36 +13,77 @@ defineProps<{
   cardToOpen: number | null;
 }>();
 
+defineEmits(["show-actions"]);
+
+const canNotifyContacts = (
+  balance: number,
+  yearsOwing: number,
+  salaryAccountDeactivated: boolean
+) => {
+  return balance > 4999 && yearsOwing > 2 && salaryAccountDeactivated;
+};
 </script>
 <template>
-  <td>{{ customer.name }}</td>
-  <td>{{ customer.balance }}</td>
-  <td>{{ customer.yearsOwing }}</td>
-  <td>{{ customer.salaryAccountDeactivated ? "Yes" : "No" }}</td>
-  <td>
-    <div>
-      <button class="btn" @click="$emit('show-actions', customer.id)">
-        Actions <span class="drop-down-icon">&#x25BC;</span>
-      </button>
-      <div class="drop-down-list" v-if="cardToOpen === customer.id">
-        <div class="drop-down-list-item">View history</div>
-        <div class="drop-down-list-item">Nudge customer</div>
-        <div
-          class="drop-down-list-item"
-          v-if="
-            customer.balance > 4999 &&
-            customer.yearsOwing > 2 &&
-            customer.salaryAccountDeactivated
-          "
-        >
-          Notify contacts
+  <tr>
+    <td>{{ customer.name }}</td>
+    <td>{{ customer.balance }}</td>
+    <td>{{ customer.yearsOwing }}</td>
+    <td>{{ customer.salaryAccountDeactivated ? "Yes" : "No" }}</td>
+    <td>
+      <div>
+        <button class="btn" @click="$emit('show-actions', customer.id)">
+          Actions <span class="drop-down-icon">&#x25BC;</span>
+        </button>
+        <div class="drop-down-list" v-if="cardToOpen === customer.id">
+          <div class="drop-down-list-item">View history</div>
+          <div class="drop-down-list-item">Nudge customer</div>
+          <div
+            class="drop-down-list-item"
+            v-if="
+              canNotifyContacts(
+                customer.balance,
+                customer.yearsOwing,
+                customer.salaryAccountDeactivated
+              )
+            "
+          >
+            Notify contacts
+          </div>
         </div>
       </div>
-    </div>
-  </td>
+    </td>
+  </tr>
 </template>
 
 <style scoped>
+.customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.customers td,
+.customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.customers tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.customers tr:hover {
+  background-color: #ddd;
+}
+
+.customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04aa6d;
+  color: white;
+}
+
 .btn {
   color: #fff;
   background-color: #04aa6d;
