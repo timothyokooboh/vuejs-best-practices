@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+
 interface Customer {
   id: number;
   name: string;
@@ -13,7 +14,7 @@ defineProps<{
   cardToOpen: number | null;
 }>();
 
-defineEmits(["show-actions"]);
+const emit = defineEmits(["show-actions"]);
 
 const canNotifyContacts = (
   balance: number,
@@ -22,7 +23,13 @@ const canNotifyContacts = (
 ) => {
   return balance > 4999 && yearsOwing > 2 && salaryAccountDeactivated;
 };
+
+const onClickAway = () => {
+  console.log("boom");
+  emit("show-actions", null);
+};
 </script>
+
 <template>
   <tr>
     <td>{{ customer.name }}</td>
@@ -31,7 +38,11 @@ const canNotifyContacts = (
     <td>{{ customer.salaryAccountDeactivated ? "Yes" : "No" }}</td>
     <td>
       <div>
-        <button class="btn" @click="$emit('show-actions', customer.id)">
+        <button
+          class="btn"
+          @click="$emit('show-actions', customer.id)"
+          v-click-away="onClickAway"
+        >
           Actions <span class="drop-down-icon">&#x25BC;</span>
         </button>
         <div class="drop-down-list" v-if="cardToOpen === customer.id">

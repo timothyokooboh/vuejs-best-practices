@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed, watch } from "vue";
 import { customers as customersData } from "../Customers";
-import CustomerListItem from "./CustomerListItem.vue";
+// import CustomerListItem from "./CustomerListItem.vue";
 
 interface Customer {
   id: number;
@@ -22,10 +22,39 @@ const canNotifyContacts = (
   return balance > 4999 && yearsOwing > 2 && salaryAccountDeactivated;
 };
 
-const test = (val: number) => {
-  console.log(val);
-  cardToOpen.value = val;
-}
+const names = ref([
+  {
+    name: "mike",
+    age: 40,
+  },
+  {
+    name: "John",
+    age: 30,
+  },
+  {
+    name: "Jane",
+    age: 25,
+  },
+  {
+    name: "anna",
+    age: 20,
+  },
+])
+
+/* const sortedCustomers = computed(() => {
+  return customers.value.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  })
+}*/
+
+const sortedCustomers = computed(() => {
+  const items = names.value.slice();
+  return items.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  });
+});
+
+console.log(sortedCustomers.value);
 </script>
 
 <template>
@@ -42,7 +71,7 @@ const test = (val: number) => {
         </tr>
       </thead>
       <tbody>
-         <tr v-for="customer in customers" :key="customer.id">
+        <tr v-for="customer in customers" :key="customer.id">
           <td>{{ customer.name }}</td>
           <td>{{ customer.balance }}</td>
           <td>{{ customer.yearsOwing }}</td>
@@ -81,6 +110,8 @@ const test = (val: number) => {
       </tbody>
     </table>
   </div>
+
+  {{ sortedCustomers }}
 </template>
 
 <style scoped>
